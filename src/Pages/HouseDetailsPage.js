@@ -14,6 +14,38 @@ const customIcon = new L.DivIcon({
     iconAnchor: [18, 36],
 });
 
+// JSON с адресами и координатами
+const locations = [
+    {
+        address: "Северо-Казахстанская область, г. Петропавловск, ул. Брусиловского 20, 150000",
+        coordinates: { latitude: 54.874219, longitude: 69.12678 }
+    },
+    {
+        address: "г. Петропавловск, ул. М.Ауэзова, 130",
+        coordinates: { latitude: 54.861344, longitude: 69.133714 }
+    },
+    {
+        address: "г. Петропавловск, Улица Павла Васильева, 123",
+        coordinates: { latitude: 54.867903, longitude: 69.156494 }
+    },
+    {
+        address: "г. Петропавловск, Улица Жалела Кизатова, 7",
+        coordinates: { latitude: 54.919425, longitude: 69.141194 }
+    },
+    {
+        address: "г. Петропавловск, Улица Конституции Казахстана, 12",
+        coordinates: { latitude: 54.871293, longitude: 69.126551 }
+    },
+    {
+        address: "г. Петропавловск, Улица Ивана Шухова, 34",
+        coordinates: { latitude: 54.902866, longitude: 69.150902 }
+    },
+    {
+        address: "г. Петропавловск, Улица Интернациональная, 90а/1",
+        coordinates: { latitude: 54.862703, longitude: 69.151972 }
+    }
+];
+
 const HouseDetailsPage = () => {
     const { directoryServiceId } = useParams();
     const [serviceData, setServiceData] = useState(null);
@@ -23,6 +55,7 @@ const HouseDetailsPage = () => {
     const [averageRating, setAverageRating] = useState(0);
     const [favorite, setFavorite] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const [coordinates, setCoordinates] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,6 +67,18 @@ const HouseDetailsPage = () => {
                     ? data.reviews.reduce((acc, review) => acc + review.rating, 0) / data.reviews.length
                     : 0
             );
+
+            // Удаляем "г." из адреса для корректного сопоставления
+            const formattedLocation = data.location.replace(/^г\.\s*/, "").trim();
+
+            console.log("Formatted Location:", formattedLocation);
+
+            const location = locations.find(loc => loc.address.includes(formattedLocation));
+            if (location) {
+                setCoordinates(location.coordinates);
+            } else {
+                console.warn("No matching address found for:", formattedLocation);
+            }
         };
         fetchData();
     }, [directoryServiceId]);
@@ -54,11 +99,12 @@ const HouseDetailsPage = () => {
     const handleFavoriteToggle = () => setFavorite(!favorite);
 
     const open2GISRoute = () => {
-        const { latitude, longitude } = serviceData.coordinates;
-        window.open(`https://2gis.kz/route/points/${latitude},${longitude}`, '_blank');
+        if (coordinates) {
+            window.open(`https://2gis.kz/route/points/${coordinates.latitude},${coordinates.longitude}`, '_blank');
+        }
     };
 
-    if (!serviceData) return <div>Loading...</div>;
+    if (!serviceData || !coordinates) return <div>Loading...</div>;
 
     return (
         <div className="content">
@@ -128,9 +174,9 @@ const HouseDetailsPage = () => {
             </div>
 
             <div className="mapContainer">
-                <MapContainer center={[serviceData.coordinates.latitude, serviceData.coordinates.longitude]} zoom={13} style={{ height: "300px", width: "100%" }}>
+                <MapContainer center={[coordinates.latitude, coordinates.longitude]} zoom={13} style={{ height: "300px", width: "100%" }}>
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <Marker position={[serviceData.coordinates.latitude, serviceData.coordinates.longitude]} icon={customIcon}>
+                    <Marker position={[coordinates.latitude, coordinates.longitude]} icon={customIcon}>
                         <Popup>{serviceData.location}</Popup>
                     </Marker>
                 </MapContainer>
