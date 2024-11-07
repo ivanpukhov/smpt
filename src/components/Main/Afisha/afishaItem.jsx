@@ -11,7 +11,7 @@ export const AfishaItem = ({ afisha }) => {
                     src={
                         afisha.image && afisha.image.startsWith("http")
                             ? afisha.image
-                            : `http://localhost:3001/api/${afisha.image}`
+                            : `https://smpt.kz/api/${afisha.image}`
                     }
                     alt="Poster"
                 />            </div>

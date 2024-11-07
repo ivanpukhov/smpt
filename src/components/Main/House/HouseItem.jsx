@@ -14,7 +14,7 @@ export const HouseItem = ({ id, title, phone, location, date, image }) => {
                     src={
                         image && image.startsWith("http")
                             ? image
-                            : `http://localhost:3001/api${image}`
+                            : `https://smpt.kz/api${image}`
                     }
                     alt="Poster"
                 />            </div>
