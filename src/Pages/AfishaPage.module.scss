@@ -1,0 +1,214 @@
+.afishaPage {
+  display: flex;
+  gap: 32px;
+  padding: 40px 0;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+
+  .imgContainer {
+    flex-shrink: 0;
+    width: 320px;
+
+    img {
+      width: 100%;
+      border-radius: 12px;
+    }
+  }
+
+  .contentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 680px;
+    color: #333;
+
+    h4 {
+      font-size: 36px;
+      margin: 0;
+      color: #ff630c;
+    }
+
+    .eventInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .date, .location {
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+        color: #666;
+
+        strong {
+          color: #333;
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .description {
+      line-height: 1.5;
+      color: #555;
+      position: relative;
+
+
+
+      .readMore {
+        color: #ff630c;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+        display: block;
+        position: relative;
+        bottom: 0;
+        right: 0;
+        background: white;
+        padding: 0 5px;
+      }
+    }
+
+    .btnContainer {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      .button {
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        border: none;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #ff790c;
+        }
+      }
+
+      .buy {
+        background: linear-gradient(198deg, #ff630c, #fd930f 80.73%, #ff9f0e);
+        color: #fff;
+      }
+
+      .google {
+        background-color: #4285f4;
+        color: white;
+      }
+
+      .apple {
+        background-color: #333;
+        color: white;
+      }
+    }
+  }
+}
+
+.commentSection {
+  margin-top: 40px;
+
+  h5 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  .comment {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 12px;
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #666;
+      flex-shrink: 0;
+    }
+
+    .commentContent {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .author {
+        font-weight: bold;
+        color: #333;
+      }
+    }
+  }
+
+  textarea {
+    width: 100%;
+    resize: none;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 16px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    outline: none;
+
+    &:focus {
+      border-color: #ff630c;
+    }
+  }
+
+  button {
+    margin-top: 12px;
+    background-color: #ff630c;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #e55a0a;
+    }
+  }
+}
+
+.mapContainer {
+  margin-top: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+
+
+@media (max-width: 768px) {
+  .afishaPage {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .imgContainer {
+      width: 100%;
+    }
+
+    .contentContainer {
+      max-width: 100%;
+      align-items: flex-start;
+
+      h4 {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .mapContainer {
+    height: 200px;
+  }
+}

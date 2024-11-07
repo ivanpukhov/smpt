@@ -1,0 +1,292 @@
+// HouseDetailsPage.scss
+
+// Цветовая палитра для современного и спокойного дизайна
+$title-color: #ff630c; // оранжевый акцент для заголовка
+$text-color: #333; // основной цвет текста
+$subtle-gray: #555; // приглушенный серый для второстепенного текста
+$bg-color: #f9f9f9; // цвет фона для разделов
+$border-color: #ddd; // светлый цвет границ
+$button-bg: #756e6e; // фон для кнопок
+$button-hover-bg: #ff630c; // цвет кнопки при наведении
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.afishaPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background-color: $bg-color;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  transition: all 0.3s ease;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 24px;
+  }
+
+
+}
+
+.imgContainer {
+  min-width: 450px !important;
+}
+
+.imgContainer img {
+  border-radius: 12px;
+  width: 100% !important;
+  transition: transform 0.4s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  width: 100%;
+
+
+  h4 {
+    font-size: 2em;
+    color: $title-color;
+    margin: 0;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: darken($title-color, 15%);
+    }
+  }
+}
+
+.eventInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+
+  * {
+    font-size: 1em;
+    color: $text-color;
+
+    strong {
+      font-weight: bold;
+      color: darken($text-color, 15%);
+    }
+  }
+}
+
+.btnContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  @media screen and (max-width: 750px) {
+    flex-direction: column;
+  }
+
+  button {
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:nth-child(1) {
+      background-color: #4285f4;
+      color: white;
+    }
+
+    &:nth-child(2) {
+      background: linear-gradient(198deg, #ff630c, #fd930f 80.73%, #ff9f0e);
+      color: white;
+    }
+
+    &:nth-child(3) {
+      background: #333;
+      color: white;
+    }
+
+    &:hover {
+      background-color: $button-hover-bg;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.readMore {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  color: $button-bg;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $button-hover-bg;
+  }
+}
+
+.description {
+  line-height: 1.6;
+  color: $subtle-gray;
+}
+
+.commentSection {
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+  h5 {
+    font-size: 1.4em;
+    color: $text-color;
+    margin-bottom: 12px;
+  }
+
+  .ratingStars {
+    display: flex;
+    gap: 4px;
+    color: #ffd700; // золотой цвет для звезд
+  }
+
+  .comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 12px;
+    background-color: $bg-color;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: lighten($bg-color, 3%);
+    }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-color: $button-bg;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.1em;
+    }
+
+    .commentContent {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .author {
+        font-weight: bold;
+        color: darken($text-color, 10%);
+      }
+
+      p {
+        margin: 0;
+        color: $subtle-gray;
+      }
+    }
+  }
+
+  // Поле ввода отзыва и рейтинг
+  textarea,
+  input[type="number"] {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 1em;
+    color: $text-color;
+  }
+
+  .button {
+    margin-top: 10px;
+    background-color: $button-bg;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: $button-hover-bg;
+    }
+  }
+}
+
+.mapContainer {
+  margin-top: 20px;
+  height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.reviews {
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 1200px) {
+  .afishaPage {
+    flex-wrap: wrap;
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
+    .imgContainer{
+      width: 100%;
+      max-width: 100%;
+      min-width: 100% !important;
+    }
+
+    h4{
+      font-size: 24px;
+      margin-top: -10px;
+    }
+
+    .eventInfo{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      &>*{
+        background: rgba(66, 133, 244, 0.7);
+        padding: 6px;
+        border-radius: 10px;
+        color: white;
+        font-weight: 500;
+        font-size: 14px;
+
+        *{
+          color: white;
+
+        }
+      }
+    }
+  }
+}

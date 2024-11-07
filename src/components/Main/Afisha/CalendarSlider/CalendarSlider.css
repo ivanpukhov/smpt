@@ -1,0 +1,102 @@
+/* CalendarSlider.css */
+.calendar-slider {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+
+}
+
+.calendar-header {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.dates-container {
+    display: flex;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+}
+
+.dates-container::-webkit-scrollbar {
+    display: none;
+}
+
+.date-box {
+    min-width: 45px;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 16px;
+    transition: background-color 0.3s;
+}
+
+.date-box.selected {
+    border-radius: 6px;
+    border: 1px solid #dde2e5;
+
+}
+
+.day {
+
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-weight: 400;
+    line-height: 120%;
+    color: #777d83;
+    text-transform: uppercase;
+}
+
+.date {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 130%;
+    color: #151516;
+
+}
+
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px 10px rgba(78,76,92,.1);
+    margin: 0 10px;
+    z-index: 1;
+}
+
+
+.scroll-button.left {
+    left: 0;
+}
+
+.scroll-button.right {
+    right: 0;
+}
+
+.scroll-button button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+    padding: 0 10px;
+}
+
+.scroll-button button:hover {
+    color: black;
+}
