@@ -113,7 +113,7 @@ const HouseDetailsPage = () => {
                     src={
                         serviceData.image && serviceData.image.startsWith("http")
                             ? serviceData.image
-                            : `http://localhost:3001/api${serviceData.image}`
+                            : `https://smpt.kz/api${serviceData.image}`
                     }
                     alt="Poster"
                 /> </div>

@@ -174,7 +174,7 @@ END:VCALENDAR
                         src={
                             eventDetails.image && eventDetails.image.startsWith("http")
                                 ? eventDetails.image
-                                : `http://localhost:3001/api/${eventDetails.image || poster}`
+                                : `https://smpt.kz/api/${eventDetails.image || poster}`
                         }
                         alt="Poster"
                     />
