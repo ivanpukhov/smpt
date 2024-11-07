@@ -1,15 +1,15 @@
+// src/components/Main/Afisha/CalendarSlider/CalendarSlider.js
 import React, { useState, useEffect, useRef } from 'react';
 import './CalendarSlider.css';
-import back from "../../../images/back.svg";
-import next from "../../../images/next.svg";
+import back from "../../../../images/back.svg";
+import next from "../../../../images/next.svg";
 
 const daysOfWeek = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
 const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-const CalendarSlider = () => {
+const CalendarSlider = ({ selectedDate, onDateChange }) => {
     const [dates, setDates] = useState([]);
     const [currentMonth, setCurrentMonth] = useState('');
-    const [selectedDate, setSelectedDate] = useState(null);
     const [showLeftButton, setShowLeftButton] = useState(false);
     const [showRightButton, setShowRightButton] = useState(true);
     const scrollRef = useRef(null);
@@ -36,13 +36,12 @@ const CalendarSlider = () => {
         setShowLeftButton(scrollLeft > 0);
         setShowRightButton(scrollLeft < maxScrollLeft);
 
-        // Обновляем текущий месяц, вычисляя точную первую видимую дату
-        const dateBoxWidth = scrollRef.current.firstChild.clientWidth; // определяем точную ширину элемента
-        const firstVisibleDateIndex = Math.floor(scrollLeft / dateBoxWidth); // рассчитываем индекс видимого элемента
+        const dateBoxWidth = scrollRef.current.firstChild.clientWidth;
+        const firstVisibleDateIndex = Math.floor(scrollLeft / dateBoxWidth);
         const firstVisibleDate = dates[firstVisibleDateIndex];
 
         if (firstVisibleDate) {
-            setCurrentMonth(monthNames[firstVisibleDate.getMonth()]); // обновляем месяц, основываясь на видимой дате
+            setCurrentMonth(monthNames[firstVisibleDate.getMonth()]);
         }
     };
 
@@ -55,7 +54,7 @@ const CalendarSlider = () => {
     };
 
     const handleDateClick = (date) => {
-        setSelectedDate(date);
+        onDateChange(date); // Устанавливаем выбранную дату
     };
 
     return (
@@ -77,7 +76,6 @@ const CalendarSlider = () => {
                     >
                         <div className="date">{date.getDate()}</div>
                         <div className="day">{daysOfWeek[date.getDay()]}</div>
-
                     </div>
                 ))}
             </div>

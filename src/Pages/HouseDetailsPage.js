@@ -1,24 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Rate } from "antd";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import con from "../images/con.webp";
+import { getDirectoryService, addDirectoryServiceReview } from "../api";
+import { useParams } from "react-router-dom";
 import "./HouseDetailsPage.scss";
-
-const data = {
-    phone: "+77777777777",
-    coordinates: { latitude: 54.8661, longitude: 69.1505 },
-    eventTitle: "Областной центр обслуживания населения",
-    workingHours: "08:00-20:00",
-    address: "Достык молл",
-    description:
-        "Описание заведения. Отличное место для посещения с удобным графиком и удобным расположением. Описание заведения. Отличное место для посещенияудобным графиком и удобным расположением...",
-    reviews: [
-        { author: "Айбек", rating: 5, content: "Отличное место!" },
-        { author: "Алия", rating: 4, content: "Хорошо, но можно улучшить сервис." }
-    ]
-};
 
 const customIcon = new L.DivIcon({
     html: `<svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" width="36px" height="36px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
@@ -28,48 +15,77 @@ const customIcon = new L.DivIcon({
 });
 
 const HouseDetailsPage = () => {
-    const [reviews, setReviews] = useState(data.reviews || []);
+    const { directoryServiceId } = useParams();
+    const [serviceData, setServiceData] = useState(null);
+    const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState("");
     const [newRating, setNewRating] = useState(0);
-    const [averageRating, setAverageRating] = useState(
-        reviews.length > 0
-            ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
-            : 0
-    );
+    const [averageRating, setAverageRating] = useState(0);
     const [favorite, setFavorite] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false);
 
-    const handleAddReview = () => {
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getDirectoryService(directoryServiceId);
+            setServiceData(data);
+            setReviews(data.reviews || []);
+            setAverageRating(
+                data.reviews.length > 0
+                    ? data.reviews.reduce((acc, review) => acc + review.rating, 0) / data.reviews.length
+                    : 0
+            );
+        };
+        fetchData();
+    }, [directoryServiceId]);
+
+    const handleAddReview = async () => {
         if (newReview && newRating) {
-            const updatedReviews = [...reviews, { author: "Вы", rating: newRating, content: newReview }];
-            setReviews(updatedReviews);
+            const newReviewData = { content: newReview, rating: newRating };
+            const addedReview = await addDirectoryServiceReview(directoryServiceId, newReviewData);
+            setReviews([...reviews, { ...addedReview, User: { firstName: "Вы", lastName: "" } }]);
             setNewReview("");
             setNewRating(0);
-            setAverageRating(updatedReviews.reduce((acc, review) => acc + review.rating, 0) / updatedReviews.length);
+            setAverageRating(
+                reviews.reduce((acc, review) => acc + review.rating, 0) / (reviews.length + 1)
+            );
         }
     };
 
     const handleFavoriteToggle = () => setFavorite(!favorite);
 
+    const open2GISRoute = () => {
+        const { latitude, longitude } = serviceData.coordinates;
+        window.open(`https://2gis.kz/route/points/${latitude},${longitude}`, '_blank');
+    };
+
+    if (!serviceData) return <div>Loading...</div>;
+
     return (
         <div className="content">
             <div className="afishaPage">
-                <div className="imgContainer"><img src={con} alt="Poster" /></div>
+                <div className="imgContainer"><img
+                    src={
+                        serviceData.image && serviceData.image.startsWith("http")
+                            ? serviceData.image
+                            : `http://localhost:3001/api${serviceData.image}`
+                    }
+                    alt="Poster"
+                /> </div>
                 <div className="contentContainer">
-                    <h4>{data.eventTitle}</h4>
+                    <h4>{serviceData.name}</h4>
                     <div className="eventInfo">
-                        <div><strong>Часы работы:</strong> {data.workingHours}</div>
-                        <div><strong>Адрес:</strong> {data.address}</div>
-                        <a href={`tel:${data.phone}`} className="phone"><strong>Телефон:</strong> {data.phone}</a>
+                        <div><strong>Часы работы:</strong> {serviceData.workingHours}</div>
+                        <div><strong>Адрес:</strong> {serviceData.location}</div>
+                        <a href={`tel:${serviceData.phone}`} className="phone"><strong>Телефон:</strong> {serviceData.phone}</a>
                     </div>
                     <div className="description">
-                        {showFullDescription ? data.description : `${data.description.slice(0, 200)}...`}
+                        {showFullDescription ? serviceData.description : `${serviceData.description.slice(0, 200)}...`}
                         <button onClick={() => setShowFullDescription(!showFullDescription)} className="readMore">
                             {showFullDescription ? "Свернуть" : "Читать далее"}
                         </button>
                     </div>
                     <div className="btnContainer">
-                        <button className="button buy">Построить маршрут в 2ГИС</button>
+                        <button className="button buy" onClick={open2GISRoute}>Построить маршрут в 2ГИС</button>
                         <button className="button" onClick={handleFavoriteToggle}>
                             {favorite ? "Убрать из избранного" : "Добавить в избранное"}
                         </button>
@@ -87,9 +103,9 @@ const HouseDetailsPage = () => {
                     <ul>
                         {reviews.map((item, index) => (
                             <li key={index} className="comment">
-                                <div className="avatar">{item.author[0]}</div>
+                                <div className="avatar">{item.User.firstName[0]}</div>
                                 <div className="commentContent">
-                                    <span className="author">{item.author}</span>
+                                    <span className="author">{`${item.User.firstName} ${item.User.lastName}`}</span>
                                     <Rate className="ratingStars" disabled value={item.rating} />
                                     <p>{item.content}</p>
                                 </div>
@@ -112,10 +128,10 @@ const HouseDetailsPage = () => {
             </div>
 
             <div className="mapContainer">
-                <MapContainer center={[data.coordinates.latitude, data.coordinates.longitude]} zoom={13} style={{ height: "300px", width: "100%" }}>
+                <MapContainer center={[serviceData.coordinates.latitude, serviceData.coordinates.longitude]} zoom={13} style={{ height: "300px", width: "100%" }}>
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <Marker position={[data.coordinates.latitude, data.coordinates.longitude]} icon={customIcon}>
-                        <Popup>{data.address}</Popup>
+                    <Marker position={[serviceData.coordinates.latitude, serviceData.coordinates.longitude]} icon={customIcon}>
+                        <Popup>{serviceData.location}</Popup>
                     </Marker>
                 </MapContainer>
             </div>

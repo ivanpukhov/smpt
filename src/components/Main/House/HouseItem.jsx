@@ -1,29 +1,41 @@
-import con from "../../images/con.webp";
-import date from "../../images/date.svg";
-import geo from "../../images/geo.svg";
+import { Typography } from "antd";
+import { Link } from "react-router-dom";
+import "leaflet/dist/leaflet.css";
+import dateIcon from "../../../images/date.svg";
+import geoIcon from "../../../images/geo.svg";
 
-export const HouseItem = () => {
+const { Title } = Typography;
+
+export const HouseItem = ({ id, title, phone, location, date, image }) => {
     return (
-        <div className="house__item">
+        <Link to={`/house/${id}`} className="house__item" style={{ cursor: "pointer" }}>
             <div className="house__img">
-                <img src={con} alt=""/>
-            </div>
+                <img
+                    src={
+                        image && image.startsWith("http")
+                            ? image
+                            : `http://localhost:3001/api${image}`
+                    }
+                    alt="Poster"
+                />            </div>
             <div className="afisha__name">
-                Nurbolat Abdullin Петропавл қаласында
+                <Title level={5}>{title}</Title>
+            </div>
+            <div className="afisha__item--small">
+                <div className="afisha__item--text">{phone}</div>
             </div>
             <div className="afisha__item--small">
                 <div className="afisha__item--svg">
-                    <img src={date} alt=""/>
+                    <img src={dateIcon} alt=""/>
                 </div>
-                <div className="afisha__item--text">08:00-20:00</div>
+                <div className="afisha__item--text">{date}</div>
             </div>
             <div className="afisha__item--small">
                 <div className="afisha__item--svg">
-                    <img src={geo} alt=""/>
+                    <img src={geoIcon} alt=""/>
                 </div>
-                <div className="afisha__item--text">Достык молл</div>
+                <div className="afisha__item--text">{location}</div>
             </div>
-
-        </div>
-    )
-}
+        </Link>
+    );
+};

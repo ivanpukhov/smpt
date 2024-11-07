@@ -1,14 +1,12 @@
-// src/api.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api'; // Замените на URL вашего сервера
+const API_URL = 'http://localhost:3001/api';
 
-// Настраиваем базовый URL для всех запросов
 const api = axios.create({
     baseURL: API_URL,
 });
 
-// Функция для установки токена в заголовок Authorization
+// Установка токена
 export const setAuthToken = (token) => {
     if (token) {
         localStorage.setItem('token', token);
@@ -17,6 +15,18 @@ export const setAuthToken = (token) => {
         localStorage.removeItem('token');
         delete api.defaults.headers.common['Authorization'];
     }
+};
+
+// Получение информации о заведении и его отзывах
+export const getDirectoryService = async (directoryServiceId) => {
+    const response = await api.get(`/directory/${directoryServiceId}`);
+    return response.data;
+};
+
+// Добавление нового отзыва к заведению
+export const addDirectoryServiceReview = async (directoryServiceId, reviewData) => {
+    const response = await api.post(`/directory-services/${directoryServiceId}/reviews`, reviewData);
+    return response.data;
 };
 
 export default api;

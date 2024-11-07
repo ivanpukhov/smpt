@@ -1,20 +1,29 @@
-// src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, Avatar, Chip, CircularProgress, Card, CardContent, List, ListItem } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { Typography, Button, Avatar, List, Card, Space, Spin, Row, Col, Empty } from 'antd';
+import { EditOutlined, HeartOutlined, PhoneOutlined, UserOutlined, StarOutlined, CommentOutlined, LikeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import api from '../api';
+
+const { Title, Text } = Typography;
 
 function ProfilePage() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [points, setPoints] = useState(0);
     const [rank, setRank] = useState("");
+    const [comments, setComments] = useState(0);
+    const [likes, setLikes] = useState(0);
+    const [favorites, setFavorites] = useState([]);
 
     useEffect(() => {
-        const storedPoints = parseInt(localStorage.getItem('points')) || 0; // Значение по умолчанию
+        const storedPoints = parseInt(localStorage.getItem('points')) || 0;
+        const storedComments = parseInt(localStorage.getItem('comments')) || 0;
+        const storedLikes = parseInt(localStorage.getItem('likes')) || 0;
+
         setPoints(storedPoints);
         setRank(getRank(storedPoints));
+        setComments(storedComments);
+        setLikes(storedLikes);
     }, []);
 
     const getRank = (points) => {
@@ -28,7 +37,10 @@ function ProfilePage() {
         const fetchProfile = async () => {
             try {
                 const response = await api.get('/user/profile');
-                setProfile(response.data);
+                const profileData = response.data;
+
+                setProfile(profileData);
+                setFavorites(profileData.favorites);
             } catch (error) {
                 console.error("Ошибка при загрузке профиля:", error);
             } finally {
@@ -38,86 +50,110 @@ function ProfilePage() {
         fetchProfile();
     }, []);
 
-    if (loading) return <CircularProgress />;
+    if (loading) return <Spin size="large" style={{ display: 'flex', justifyContent: 'center', padding: '50px' }} />;
 
     return (
-        <Box sx={{ padding: 3 }}>
+        <div style={{ padding: '24px' }}>
+            <Row justify="center" style={{ textAlign: 'center', paddingBottom: '24px' }}>
+                <Col>
+                    <Avatar size={100} style={{ backgroundColor: '#87d068' }}>
+                        {profile.firstName[0]}{profile.lastName[0]}
+                    </Avatar>
+                    <Title level={3} style={{ marginTop: '16px' }}>Личный кабинет</Title>
+                    <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        shape="round"
+                        size="large"
+                        style={{ marginTop: '8px', textTransform: 'none' }}
+                        href="/profile/edit"
+                    >
+                        Редактировать
+                    </Button>
+                </Col>
+            </Row>
 
+            <Row gutter={16} justify="center" style={{ marginTop: '32px' }}>
+                <Col span={24} md={12} lg={8}>
+                    <Card bordered style={{ borderRadius: '8px' }}>
+                        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                            <Title level={4}>
+                                <UserOutlined /> {profile.firstName} {profile.lastName}
+                            </Title>
+                            <Text><PhoneOutlined /> Телефон: {profile.phone}</Text>
+                            <Text><StarOutlined /> Баллы: {points}</Text>
+                            <Text><HeartOutlined /> Звание: {rank}</Text>
+                            <Text><CommentOutlined /> Комментарии: {comments}</Text>
+                            <Text><LikeOutlined /> Лайки: {likes}</Text>
+                        </Space>
+                    </Card>
+                </Col>
+            </Row>
 
-            <Box display="flex" justifyContent="space-between" flexDirection={"column"} gap={'24px'} alignItems="center" mb={3}>
-                <Typography variant="h4" fontWeight="bold">Личный кабинет</Typography>
-                <Button
-                    component={Link}
-                    to="/profile/edit"
-                    variant="contained"
-                    startIcon={<Edit />}
-                    sx={{ borderRadius: 2, textTransform: 'none' }}
-                >
-                    Редактировать
-                </Button>
-            </Box>
+            <Row justify="center" style={{ marginTop: '32px', textAlign: 'center' }}>
+                <Col span={24}>
+                    <Title level={4}>Обо мне</Title>
+                    <Text>{profile.bio || "Информация отсутствует"}</Text>
+                </Col>
+            </Row>
 
-            <Box display="flex" alignItems="center" gap={2} mb={3}>
-                <Avatar sx={{ width: 64, height: 64 }}>{profile.firstName[0]}{profile.lastName[0]}</Avatar>
-                <Box>
-                    <Typography variant="h6">{profile.firstName} {profile.lastName}</Typography>
-                    <Typography color="textSecondary">Телефон: {profile.phone}</Typography>
-                    <Typography color="textSecondary">Баллы: {points}</Typography>
-                    <Typography color="textSecondary">Звание: {rank}</Typography>
-                </Box>
-            </Box>
-
-            <Box mb={3}>
-                <Typography variant="h6" gutterBottom>Обо мне</Typography>
-                <Typography variant="body1">{profile.bio || "Информация отсутствует"}</Typography>
-            </Box>
-
-            <Box mb={3}>
-                <Typography variant="h6" gutterBottom>Интересы</Typography>
-                <Box display="flex" flexWrap="wrap" gap={1}>
-                    {profile.interests.map((interest, index) => (
-                        <Chip key={index} label={interest.name} color="primary" />
-                    ))}
-                </Box>
-            </Box>
-
-            <Box>
-                <Typography variant="h6" gutterBottom>Избранные мероприятия</Typography>
-                {profile.favorites.length === 0 ? (
-                    <Typography color="textSecondary">Нет избранных мероприятий.</Typography>
-                ) : (
-                    <List>
-                        {profile.favorites.map((event) => (
-                            <ListItem
-                                key={event.id}
-                                component={Link}
-                                to={`/events/${event.id}`}
-                                sx={{
-                                    textDecoration: 'none',
-                                    color: 'inherit',
-                                    '&:hover': {
-                                        backgroundColor: '#f0f0f0',
-                                    },
-                                }}
-                            >
-                                <Card sx={{ width: '100%', borderRadius: 2, boxShadow: 1 }}>
-                                    <CardContent>
-                                        <Typography variant="h6">{event.title}</Typography>
-                                        <Typography color="textSecondary">
-                                            {new Date(event.startDate).toLocaleDateString()} - {event.location}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{ mt: 1 }}>{event.description}</Typography>
-                                        <Typography variant="caption" color="textSecondary" sx={{ mt: 1, display: 'block' }}>
-                                            Лайков: {event.likes}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </ListItem>
-                        ))}
-                    </List>
-                )}
-            </Box>
-        </Box>
+            <Row justify="center" style={{ marginTop: '32px' }}>
+                <Col span={24}>
+                    <Title level={4}>Избранные мероприятия</Title>
+                    {favorites.length === 0 ? (
+                        <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description={<span>Нет избранных мероприятий</span>}
+                            style={{ padding: '24px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}
+                        />
+                    ) : (
+                        <List
+                            grid={{ gutter: 16, column: 2 }}
+                            dataSource={favorites}
+                            renderItem={event => (
+                                <List.Item>
+                                    <Link to={`/events/${event.id}`} style={{ width: '100%' }}>
+                                        <Card
+                                            hoverable
+                                            style={{
+                                                borderRadius: '8px',
+                                                overflow: 'hidden',
+                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                                transition: 'transform 0.3s',
+                                                height: '100%'
+                                            }}
+                                            bodyStyle={{ padding: '16px' }}
+                                            cover={
+                                                <div style={{
+                                                    height: '160px',
+                                                    background: 'linear-gradient(135deg, #6f86d6, #48c6ef)',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <HeartOutlined style={{ fontSize: '36px', color: '#fff' }} />
+                                                </div>
+                                            }
+                                        >
+                                            <Title level={5}>{event.title}</Title>
+                                            <Text type="secondary">
+                                                {new Date(event.startDate).toLocaleDateString()} - {event.location}
+                                            </Text>
+                                            <p style={{ marginTop: '8px' }}>
+                                                {event.description.length > 100
+                                                    ? `${event.description.substring(0, 100)}...`
+                                                    : event.description}
+                                            </p>
+                                            <Text type="secondary">Лайков: {event.likes}</Text>
+                                        </Card>
+                                    </Link>
+                                </List.Item>
+                            )}
+                        />
+                    )}
+                </Col>
+            </Row>
+        </div>
     );
 }
 

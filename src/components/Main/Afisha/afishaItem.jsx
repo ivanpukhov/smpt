@@ -1,35 +1,43 @@
-import poster from "../../images/poster.jpg";
-import date from "../../images/date.svg";
-import geo from "../../images/geo.svg";
-import tenge from "../../images/Tenge.svg";
+import { Link } from "react-router-dom";
+import dateIcon from "../../../images/date.svg";
+import geoIcon from "../../../images/geo.svg";
+import tengeIcon from "../../../images/Tenge.svg";
 
-export const AfishaItem = () => {
+export const AfishaItem = ({ afisha }) => {
     return (
-        <div className="afisha__item">
+        <Link to={`/afisha/${afisha.id}`} className="afisha__item">
             <div className="afisha__img">
-                <img src={poster} alt=""/>
-            </div>
+                <img
+                    src={
+                        afisha.image && afisha.image.startsWith("http")
+                            ? afisha.image
+                            : `http://localhost:3001/api/${afisha.image}`
+                    }
+                    alt="Poster"
+                />            </div>
             <div className="afisha__name">
-                Nurbolat Abdullin Петропавл қаласында
+                {afisha.title}
             </div>
             <div className="afisha__item--small">
                 <div className="afisha__item--svg">
-                    <img src={date} alt=""/>
+                    <img src={dateIcon} alt="Дата" />
                 </div>
-                <div className="afisha__item--text">Вт. 12 ноя, 19:00</div>
+                <div className="afisha__item--text">
+                    {afisha.startDate ? new Date(afisha.startDate).toLocaleString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Дата не указана'}
+                </div>
             </div>
             <div className="afisha__item--small">
                 <div className="afisha__item--svg">
-                    <img src={geo} alt=""/>
+                    <img src={geoIcon} alt="Локация" />
                 </div>
-                <div className="afisha__item--text">Достык молл</div>
+                <div className="afisha__item--text">{afisha.location || 'Локация не указана'}</div>
             </div>
             <div className="afisha__item--small">
                 <div className="afisha__item--svg">
-                    <img src={tenge} alt=""/>
+                    <img src={tengeIcon} alt="Цена" />
                 </div>
-                <div className="afisha__item--text">от 6000 тг</div>
+                <div className="afisha__item--text">от {afisha.price ? `${afisha.price} тг` : 'Бесплатно'}</div>
             </div>
-        </div>
-    )
-}
+        </Link>
+    );
+};

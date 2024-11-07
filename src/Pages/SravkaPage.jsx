@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal, Button } from 'antd';
 import {TopList} from "../components/Main/TopList";
 
-export const Spavka = () => {
+export const SravkaPage = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedPhone, setSelectedPhone] = useState('');
     const [selectedName, setSelectedName] = useState('');
