@@ -253,7 +253,7 @@ END:VCALENDAR
             <Dialog open={qrOpen} onClose={() => setQrOpen(false)}>
                 <DialogTitle>QR-код для добавления в избранное</DialogTitle>
                 <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 3 }} ref={qrRef}>
-                    <QRCodeCanvas value={`${window.location.origin}/events/${eventId}?addToFavorite=true`} size={200} />
+                    <QRCodeCanvas value={`${window.location.origin}/afisha/${eventId}?addToFavorite=true`} size={200} />
                     <Button onClick={() => setQrOpen(false)} variant="contained" color="primary" sx={{ mt: 2 }}>
                         Закрыть
                     </Button>
